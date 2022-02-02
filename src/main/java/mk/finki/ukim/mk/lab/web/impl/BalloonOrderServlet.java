@@ -1,7 +1,6 @@
-package mk.finki.ukim.mk.lab.web;
+package mk.finki.ukim.mk.lab.web.impl;
 
 import mk.finki.ukim.mk.lab.service.BalloonService;
-import mk.finki.ukim.mk.lab.service.OrderService;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
@@ -12,33 +11,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "thymeleaf-balloon-servlet", urlPatterns = "/thymeleaf/balloon")
-
-public class ThymeleafBalloonServlet extends HttpServlet {
-
+@WebServlet(name = "Balloon-Order-Servlet", urlPatterns = "/BalloonOrder.do")
+public class BalloonOrderServlet extends HttpServlet {
     private final SpringTemplateEngine springTemplateEngine;
     private final BalloonService balloonService;
-    private final OrderService orderService;
 
-    public ThymeleafBalloonServlet(SpringTemplateEngine springTemplateEngine, BalloonService balloonService, OrderService orderService) {
+    public BalloonOrderServlet(SpringTemplateEngine springTemplateEngine, BalloonService balloonService) {
         this.springTemplateEngine = springTemplateEngine;
         this.balloonService = balloonService;
-        this.orderService = orderService;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if(req.getSession().getAttribute("color") == null || req.getSession().getAttribute("sizeBalloon") == null){
+            resp.sendRedirect("/thymeleaf/balloon");
+        }
         WebContext context=new WebContext(req,resp,req.getServletContext());
         context.setVariable("ipAddress",req.getRemoteAddr());
         context.setVariable("UserAgent",req.getHeader("User-Agent"));
-        context.setVariable("balloons",balloonService.listAll());
-        this.springTemplateEngine.process("listBalloons",context,resp.getWriter());
+        this.springTemplateEngine.process("deliveryInfo",context,resp.getWriter());
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String color=req.getParameter("color");
-        req.getSession().setAttribute("color",color);
-        resp.sendRedirect("/selectBalloon");
+        String clientName=req.getParameter("clientName");
+        String clientAddress=req.getParameter("clientAddress");
+        req.getSession().setAttribute("clientname",clientName);
+        req.getSession().setAttribute("clientAddress",clientAddress);
+        resp.sendRedirect("/ConfirmationInfo");
     }
 }

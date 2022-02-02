@@ -1,4 +1,4 @@
-package mk.finki.ukim.mk.lab.web;
+package mk.finki.ukim.mk.lab.web.impl;
 
 import mk.finki.ukim.mk.lab.model.Balloon;
 import mk.finki.ukim.mk.lab.service.BalloonService;

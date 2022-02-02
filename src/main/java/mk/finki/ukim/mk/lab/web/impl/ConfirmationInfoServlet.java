@@ -1,4 +1,4 @@
-package mk.finki.ukim.mk.lab.web;
+package mk.finki.ukim.mk.lab.web.impl;
 
 import mk.finki.ukim.mk.lab.service.BalloonService;
 import org.thymeleaf.context.WebContext;
@@ -11,33 +11,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "Balloon-Order-Servlet", urlPatterns = "/BalloonOrder.do")
-public class BalloonOrderServlet extends HttpServlet {
+@WebServlet(name = "Confirmation-Servlet",urlPatterns = "/ConfirmationInfo")
+public class ConfirmationInfoServlet extends HttpServlet {
     private final SpringTemplateEngine springTemplateEngine;
     private final BalloonService balloonService;
 
-    public BalloonOrderServlet(SpringTemplateEngine springTemplateEngine, BalloonService balloonService) {
+    public ConfirmationInfoServlet(SpringTemplateEngine springTemplateEngine, BalloonService balloonService) {
         this.springTemplateEngine = springTemplateEngine;
         this.balloonService = balloonService;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getSession().getAttribute("color") == null || req.getSession().getAttribute("sizeBalloon") == null){
+        if(req.getSession().getAttribute("color") == null || req.getSession().getAttribute("sizeBalloon") == null
+        || req.getSession().getAttribute("clientname")==null || req.getSession().getAttribute("clientAddress")==null){
             resp.sendRedirect("/thymeleaf/balloon");
         }
         WebContext context=new WebContext(req,resp,req.getServletContext());
         context.setVariable("ipAddress",req.getRemoteAddr());
         context.setVariable("UserAgent",req.getHeader("User-Agent"));
-        this.springTemplateEngine.process("deliveryInfo",context,resp.getWriter());
+        this.springTemplateEngine.process("confirmationInfo",context,resp.getWriter());
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String clientName=req.getParameter("clientName");
-        String clientAddress=req.getParameter("clientAddress");
-        req.getSession().setAttribute("clientname",clientName);
-        req.getSession().setAttribute("clientAddress",clientAddress);
-        resp.sendRedirect("/ConfirmationInfo");
+        resp.sendRedirect("");
     }
 }

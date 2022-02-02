@@ -1,4 +1,4 @@
-package mk.finki.ukim.mk.lab.web;
+package mk.finki.ukim.mk.lab.web.impl;
 
 import mk.finki.ukim.mk.lab.service.BalloonService;
 import org.thymeleaf.context.WebContext;
@@ -23,7 +23,7 @@ public class SelectBalloonServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if(req.getSession().getAttribute("color") == null){
-            resp.sendRedirect("/thymeleaf/balloon");
+            resp.sendRedirect("/balloons");
         }
         WebContext context=new WebContext(req,resp,req.getServletContext());
         context.setVariable("ipAddress",req.getRemoteAddr());
